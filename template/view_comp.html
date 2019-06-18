@@ -1,0 +1,49 @@
+ <h4 style="display:inline;margin-left:30px">
+ <form method="post" style="display:inline;">
+  <button type="submit" name="page" value="" class="btn-link">Home</button>
+  &nbsp&nbsp&nbsp&nbsp
+  <input type="hidden" name="run_id" value="{{ run_id }}">
+  <input type="hidden" name="state" value="{{ state }}">
+  <input type="hidden" name="notes" value="{{ notes }}">
+  <button type="submit" name="page" value="editcopy" class="btn-link">Copy to New Profile</button>
+  &nbsp&nbsp&nbsp&nbsp
+  <input type="hidden" name="run_id" value="{{ run_id }}">
+  <input type="hidden" name="notes" value="{{ notes }}">
+  <button type="submit" name="page" value="del_conf" class="btn-link">Delete Profile</button>
+ </form>
+ </h4>
+ <br><br>
+ {{ message }}
+ <h2 style="display:inline;margin-left:30px">Segments for {{ state }} Profile {{ run_id }}</h2><br>
+ <form method="post" style="display:inline;margin-left:30px">
+  <input type="hidden" name="run_id" value="{{ run_id }}">
+  <input type="hidden" name="state" value="{{ state }}">
+  <input type="text" name="notes" value="{{ notes }}" size="60">
+  <button type="submit" name="page" value="notes_save" class="btn-link">Update Notes</button>
+ </form>
+ <br>
+ <h4 style="display:inline;margin-left:30px">PID Settings: </h4>&nbsp;&nbsp;
+ <h5 style="display:inline;">Proportional: {{ profile['p_param'] }}&nbsp;&nbsp;&nbsp;&nbsp;Integral: {{ profile['i_param'] }}&nbsp;&nbsp;&nbsp;&nbsp;Derivative: {{ profile['d_param'] }}</h5>
+ <table style="margin-left:30px">
+ <tr>
+  <th>Seg</th>
+  <th>Trg &deg;C</th>
+  <th>&deg;C/hr</th>
+  <th>Hold Min</th>
+  <th>Int Sec</th>
+  <th>Last Start Time</th>
+  <th>Last End Time</th>
+ </tr>
+ {% for segment in segments %}
+ <tr>
+  <td>{{ segment['segment'] }}</td>
+  <td>{{ segment['set_temp'] }}</td>
+  <td>{{ segment['rate'] }}</td>
+  <td>{{ segment['hold_min'] }}</td>
+  <td>{{ segment['int_sec'] }}</td>
+  <td>{{ segment['start_time'] }}</td>
+  <td>{{ segment['end_time'] }}</td>
+ </tr>
+ {% endfor %}
+ </table>
+ <br>
