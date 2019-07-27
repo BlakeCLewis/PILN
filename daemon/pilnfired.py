@@ -44,13 +44,12 @@ Sensor0 = MAX31856(tc_type=MAX31856.MAX31856_K_TYPE,
                    hardware_spi=SPI.SpiDev(0,0)) #SPI0,CE0 Kiln
 Sensor1 = MAX31856(tc_type=MAX31856.MAX31856_K_TYPE,
                    hardware_spi=SPI.SpiDev(0,1)) #SPI0,CE1 Room
-#--- Fan ---
+#--- Fan to cool control box---
 FAN=13
 GPIO.setup(FAN, GPIO.OUT)
 GPIO.output(FAN, GPIO.LOW)
-
 def fan(dafan, ambient, internal):
-  if internal > ambient + 15:
+  if internal > ambient + 10:
       GPIO.output(dafan, GPIO.HIGH)
   else:
       GPIO.output(dafan, GPIO.LOW)
@@ -159,6 +158,7 @@ def Fire(RunID, Seg, TargetTmp1, Rate, HoldMin, Window, Kp, Ki, Kd, KSTrg):
                 print ('  "roomtemp": "' + str(int(roomTmp)) + '",\n')
             if math.isnan(roomTmp):
                roomTmp = 15
+            fan(FAN, roomTmp, ReadITmp)
 
             if RampTrg == 0:
                 # if RampTmp has not yet reached TargetTmp increase RampTmp
@@ -344,6 +344,8 @@ while 1:
     while math.isnan(roomTmp):
         roomTmp = Sensor1.read_temp_c()
         print (' "roomtemp": "' + str(int(roomTmp)) + '",\n')
+
+    fan(FAN, roomTmp, ReadITmp)
 
     L.debug("Write status information to status file %s:" % StatFile)
 
