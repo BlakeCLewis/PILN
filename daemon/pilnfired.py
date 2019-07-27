@@ -19,11 +19,11 @@ lcd.clear()
 
 GPIO.setmode(GPIO.BCM)
 
-AppDir = '/home/pi/git/MyPiLN'
+AppDir = '/home/mypiln/PILN'
 StatFile = '/var/www/html/pilnstat.json'
 
 #--- sqlite3 db file ---
-SQLDB = '/var/www/db/MyPiLN/PiLN.sqlite3'
+SQLDB = '/home/mypiln/PILN/db/PiLN.sqlite3'
 
 #--- Set up logging ---
 LogFile = time.strftime(AppDir + '/log/pilnfired.log')
@@ -44,6 +44,16 @@ Sensor0 = MAX31856(tc_type=MAX31856.MAX31856_K_TYPE,
                    hardware_spi=SPI.SpiDev(0,0)) #SPI0,CE0 Kiln
 Sensor1 = MAX31856(tc_type=MAX31856.MAX31856_K_TYPE,
                    hardware_spi=SPI.SpiDev(0,1)) #SPI0,CE1 Room
+#--- Fan ---
+FAN=13
+GPIO.setup(FAN, GPIO.OUT)
+GPIO.output(FAN, GPIO.LOW)
+
+def fan(dafan, ambient, internal):
+  if internal > ambient + 15:
+      GPIO.output(dafan, GPIO.HIGH)
+  else:
+      GPIO.output(dafan, GPIO.LOW)
 
 #--- Relays ---
 HEAT = (24, 23, 22)
