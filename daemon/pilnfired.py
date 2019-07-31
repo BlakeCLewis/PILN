@@ -4,7 +4,6 @@ from signal import *
 import os
 import time
 import math
-import logging as L
 import sys
 import sqlite3
 import RPi.GPIO as GPIO
@@ -19,19 +18,11 @@ lcd.clear()
 
 GPIO.setmode(GPIO.BCM)
 
-AppDir = '/home/mypiln/PILN'
-StatFile = '/var/www/html/pilnstat.json'
+AppDir = '/home/pi/PILN'
+StatFile = '/home/pi/html/pilnstat.json'
 
 #--- sqlite3 db file ---
-SQLDB = '/home/mypiln/PILN/db/PiLN.sqlite3'
-
-#--- Set up logging ---
-LogFile = time.strftime(AppDir + '/log/pilnfired.log')
-L.basicConfig(filename=LogFile,
-#comment to disable:
-#    level=L.DEBUG,
-    format='%(asctime)s %(message)s'
-)
+SQLDB = '/home/pi/db/PiLN.sqlite3'
 
 #--- Global Variables ---
 ITerm = 0.0
@@ -84,19 +75,10 @@ time.sleep(1)
 
 # PID Update
 def Update(SetPoint, ProcValue, AmbientTmp, IMax, IMin, Window, Kp, Ki, Kd):
-    L.debug("""Entering PID update with parameters SetPoint:%0.2f,
-               ProcValue:%0.2f, IMax:%0.2f, IMin:%0.2f, Window:%d,
-               Kp: %0.3f, Ki: %0.3f, Kd: %0.3f
-            """ % (SetPoint, ProcValue, IMax, IMin, Window, Kp, Ki, Kd)
-    )
     global ITerm, LastErr
-    CTerm = (ProcValue - AmbientTmp)*.06    #6% per 100C differentital
+    CTerm = (ProcValue - AmbientTmp)*.06
     Err = SetPoint - ProcValue
-    PTerm = Kp * Err * 60/Window
-    #IeMax = IMax / Ki
-    #normialize ITerm, Ki may have changed
-    # ITerm = IeMax if ITerm > IeMax
-    # ITerm = IeMin if ITerm < IeMin
+    PTerm = Kp * Err * 60/Win
     ITerm += (Ki * Err) 
     if ITerm > IMax:
         ITerm = IMax
@@ -109,21 +91,11 @@ def Update(SetPoint, ProcValue, AmbientTmp, IMax, IMin, Window, Kp, Ki, Kd):
     elif Output < 0:
         Output = 0
     LastErr = Err
-    # Kc=6, Kp=3, Ki=0.35, Kd=10
-    # Ierr += Err #summation of Err
-    # IeMax = IMax / Ki
-    # Ierr = lim(IeMin,IeMax,Ierr)
-    # output(lim 0..100) = Kc*(PV-AT)/100 + Kp*Err + Ki*Ierr + Kd*(Err-LastErr)
     print ("{CT:7.4f} + {PT:7.4f} + {IT:7.4f} + {DT:8.6f} = {OT:8.4f}".format(CT=CTerm,PT=PTerm,IT=ITerm,DT=DTerm,OT=Output))
-
     return Output
 
 #Segment loop
 def Fire(RunID, Seg, TargetTmp1, Rate, HoldMin, Window, Kp, Ki, Kd, KSTrg):
-    L.info("""Entering Fire function with parameters RunID:%d, Seg:%d,
-              TargetTmp:%d, Rate:%d, HoldMin:%d, Window:%d
-           """ % (RunID, Seg, TargetTmp1, Rate, HoldMin, Window)
-    )
     global SegCompStat
     global wheel
     TargetTmp = TargetTmp1
@@ -177,7 +149,6 @@ def Fire(RunID, Seg, TargetTmp1, Rate, HoldMin, Window, Kp, Ki, Kd, KSTrg):
                         # block RampTrg and ReadTrg from resetting hold
                         ReadTrg = RampTrg = 1
                     RunState = 'KilnSitter/Hold'
-                    L.info("KS Triggered - End seconds set to %d" % EndSec)
                 #---- RampTrg ----
                 if RampTrg == 0 and RampTmp >= TargetTmp:
                     # RampTmp (window target temp) is 1 cycle away
@@ -196,12 +167,10 @@ def Fire(RunID, Seg, TargetTmp1, Rate, HoldMin, Window, Kp, Ki, Kd, KSTrg):
                     or (ReadTmp >= TargetTmp)) and ReadTrg == 0:
                     ReadTrg = 1
                     EndSec = int(time.time()) + HoldMin*60
-                    L.info("Set temp reached - End seconds set to %d" % EndSec)
                     if RampTrg == 1:
                         RunState = "Target/Hold"
                     else:
                         RunState = "Target Reached"
-
             # Falling Segment
             elif TmpDif < 0:
                 #---- RampTrg ----
@@ -219,7 +188,6 @@ def Fire(RunID, Seg, TargetTmp1, Rate, HoldMin, Window, Kp, Ki, Kd, KSTrg):
                 # Read temp dropped to target or close enough
                     ReadTrg = 1
                     EndSec = int(time.time()) + HoldMin*60
-                    L.info("Set temp reached - End seconds set to %d" % EndSec)
                     if RampTrg == 1:
                         RunState = "Ramp/Target"
                     else:
@@ -242,13 +210,7 @@ def Fire(RunID, Seg, TargetTmp1, Rate, HoldMin, Window, Kp, Ki, Kd, KSTrg):
                     # Hey we there before we even started!
                     RampTmp = TargetTmp # set window target to final target
                 LastErr = 0.0
-                L.info("""First pass of firing loop - TargetTmp:%0.2f,
-                          StartTmp:%0.2f,RampTmp:%0.2f, TmpDif:%0.2f,
-                          RampMin:%0.2f, Steps:%d, StepTmp:%0.2f,
-                          Window:%d, StartSec:%d, EndSec:%d
-                       """ % (TargetTmp, StartTmp, RampTmp, TmpDif, RampMin,
-                              Steps, StepTmp, Window, StartSec, EndSec)
-                )
+                
             # run state through pid
             Output = Update(RampTmp, ReadTmp, roomTmp, 25, -25, Window, Kp, Ki, Kd)
             
@@ -267,17 +229,14 @@ def Fire(RunID, Seg, TargetTmp1, Rate, HoldMin, Window, Kp, Ki, Kd, KSTrg):
                            TargetTmp, Output, CycleOnSec, RemTime)
             )
             if Output > 0:
-                L.debug("==>Relay On")
                 for element in HEAT:
                     GPIO.output(element, True)
                 time.sleep(CycleOnSec)
             if Output < 100:
-                L.debug("==>Relay Off")
                 for element in HEAT:
                     GPIO.output(element, False)
 
-            L.debug("Write status information to status file %s:" % StatFile)
-            # Write status to file for reporting on web page
+            # Write status to json file for reporting on web page
             sfile = open(StatFile, "w+")
             sfile.write('{\n' +
                 '  "proc_update_utime": "' + str(int(time.time())) + '",\n'
@@ -294,8 +253,6 @@ def Fire(RunID, Seg, TargetTmp1, Rate, HoldMin, Window, Kp, Ki, Kd, KSTrg):
 
             lcd.writeFire(RunState,RunID,Seg,ReadTmp,TargetTmp,RampTmp,RemTime)
 
-            L.debug("Writing stats to Firing DB table...")
-
             sql = """INSERT INTO firing(run_id, segment, dt,
                         set_temp, temp, int_temp, pid_output)
                      VALUES ( ?,?,?,?,?,?,? );
@@ -307,7 +264,6 @@ def Fire(RunID, Seg, TargetTmp1, Rate, HoldMin, Window, Kp, Ki, Kd, KSTrg):
                 SQLConn.commit()
             except:
                 SQLConn.rollback()
-                L.error("DB Update failed!")
 
             # Check if profile is still in running state
             sql = "SELECT * FROM profiles WHERE state=? AND run_id=?;"
@@ -315,7 +271,6 @@ def Fire(RunID, Seg, TargetTmp1, Rate, HoldMin, Window, Kp, Ki, Kd, KSTrg):
             SQLCur.execute(sql, p)
             result = SQLCur.fetchall()
             if len(result) == 0:
-                L.warn("Profile no longer in running state - exiting firing")
                 SegCompStat = 1 
                 RunState = "Stopped"
 
@@ -324,9 +279,6 @@ def Fire(RunID, Seg, TargetTmp1, Rate, HoldMin, Window, Kp, Ki, Kd, KSTrg):
                 RunState = "Complete"
     return KSTrg
 # --- end Fire() ---
-
-L.info("===START PiLN Firing Daemon===")
-L.info("Polling for 'Running' firing profiles...")
 
 lcd.clear()
 SQLConn = sqlite3.connect(SQLDB)
@@ -346,8 +298,6 @@ while 1:
         print (' "roomtemp": "' + str(int(roomTmp)) + '",\n')
 
     fan(FAN, roomTmp, ReadITmp)
-
-    L.debug("Write status information to status file %s:" % StatFile)
 
     sfile = open(StatFile, "w+")
     sfile.write('{\n' +
@@ -377,10 +327,8 @@ while 1:
             Kp = float(Data[0]['p_param'])
             Ki = float(Data[0]['i_param'])
             Kd = float(Data[0]['d_param'])
-            L.info("Run ID %d is active - starting firing profile" % RunID)
 
             StTime = time.strftime('%Y-%m-%d %H:%M:%S')
-            L.debug("Update profile %d start time to %s" % (RunID, StTime))
 
             sql = "UPDATE profiles SET start_time=? WHERE run_id=?;"
             p = (StTime, RunID)
@@ -389,11 +337,8 @@ while 1:
                 SQLConn.commit()
             except:
                 SQLConn.rollback()
-                L.error("DB Update failed!")
 
             # Get segments
-            L.info("Get segments for run ID %d" % RunID)
-
             sql = "SELECT * FROM segments WHERE run_id=?;"
             p = (RunID,)
             SQLCur.execute(sql, p)
@@ -408,20 +353,8 @@ while 1:
                 HoldMin = Row['hold_min']
                 Window = Row['int_sec']
 
-                if SegCompStat == 1:
-                    L.debug("Profile stopped - skipping segment %d" % Seg)
-                else:
-                    L.info("""Run ID %d, segment %d parameters:
-                              Target Temp: %0.2f, Rate: %0.2f,
-                              Hold Minutes: %d, Window Seconds: %d
-                           """ % (RunID, Seg, TargetTmp, Rate, HoldMin, Window)
-                    )
+                if SegCompStat != 1:
                     StTime = time.strftime('%Y-%m-%d %H:%M:%S')
-                    L.debug("""Update segments set run id %d,
-                               segment %d start time to %s
-                            """ % (RunID, Seg, StTime)
-                    )
-
                     #--- mark started segment with datatime ---
                     sql = """UPDATE segments SET start_time=?
                              WHERE run_id=? AND segment=?;
@@ -432,8 +365,7 @@ while 1:
                         SQLConn.commit()
                     except:
                         SQLConn.rollback()
-                        L.error("DB Update failed!")
-
+                        
                     time.sleep(0.5)
 
                     #--- fire segment ---
@@ -444,9 +376,6 @@ while 1:
                         GPIO.output(element, False) ## make sure elements are off
 
                     EndTime=time.strftime('%Y-%m-%d %H:%M:%S')
-                    L.debug("Update run id %d, segment %d end time to %s"
-                            % (RunID, Seg, EndTime)
-                    )
 
                     #--- mark segment finished with datetime ---
                     sql = """UPDATE segments SET end_time=?
@@ -458,20 +387,12 @@ while 1:
                         SQLConn.commit()
                     except:
                         SQLConn.rollback()
-                        L.error("DB Update failed!")
 
                     lcd.clear()
             # --- end firing loop ---
 
-            if SegCompStat == 1:
-                L.info("Profile stopped - Not updating profile end time")
-            else:
+            if SegCompStat != 1:
                 EndTime = time.strftime('%Y-%m-%d %H:%M:%S')
-                L.debug("""Update profile end time to %s
-                           and state to %s for run id %d
-                        """ % (EndTime, 'Completed', RunID)
-                )
-
                 sql = "UPDATE profiles SET end_time=?, state=? WHERE run_id=?;"
                 p = (EndTime, 'Completed', RunID)
                 try:
@@ -479,11 +400,9 @@ while 1:
                     SQLConn.commit()
                 except:
                     SQLConn.rollback()
-                    L.error("DB Update failed!")
-
+                    
             SegCompStat = 0
-
-            L.info("Polling for 'Running' firing profiles...")
+            
     time.sleep(2)
 
 SQLConn.close()
