@@ -107,12 +107,14 @@ Stuff to get it to work:
 		unl2003a 1:		GPIO 22 
 		unl2003a 3:		GPIO 23
 		unl2003a 5:		GPIO 24
+		unl2003a 7:             GPIO 13
 		unl2003a 8:		GND
 		unl2003a 9:		12V
-		unl2003a 16:	relay #1 coil - (input is accross the chip on pin1)
-		unl2003a 14:	relay #2 coil - (input is pin3)
-		unl2003a 12:	relay #3 coil - (input is pin5)
-        12V:	relay 1,2 and 3 coils
+		unl2003a 10:            FAN black/gnd
+		unl2003a 16:	relay #1 coil (input is accross the chip on pin1)
+		unl2003a 14:	relay #2 coil (input is pin3)
+		unl2003a 12:	relay #3 coil (input is pin5)
+        12V:	relay 1,2,3 coils and FAN red/+
 
 - Install PiLN files in /home and create log directory:
 
@@ -181,12 +183,12 @@ Stuff to get it to work:
 
 - Tuning: 
 
-	+ Skutt KS1027 with old elements, minimal oscillation w/ very little overshoot:
-
-            Kc               6.0
-			Proportional:    5.0
-			Integral:        1.0
-			Derivative:     25.0
+	+ Skutt KS1027 with old elements:
+	
+			Kc:   6.0% 
+			Kp:   3.0
+			Ki:   0.4
+			Kd:  13.0
 			Time internal:  30 seconds
 
 - Using the Web App:
