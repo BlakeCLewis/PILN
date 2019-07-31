@@ -22,43 +22,51 @@ Future improvements:
 
 Hardware:
 - 20x4 LCD w/ i2c backpack
-	+ $13, (https://www.amazon.com/gp/product/B01GPUMP9C/ref=oh_aui_detailpage_o01_s00?ie=UTF8&psc=1) uses RPLCD library
+	+ $13, (https://www.amazon.com/gp/product/B01GPUMP9C/ref=oh_aui_detailpage_o01_s00?ie=UTF8&psc=1) uses RPLCD library;
 - 2 MAX31856 thermocouple module
 	+ $17.50 each, Adafruit (https://www.adafruit.com/product/3263);
 - High temperature (2372 F) type K thermocouple
 	+ $7/each, 3 pack, (https://www.aliexpress.com/item/High-Temperature-K-Type-Thermocouple-Sensor-for-Ceramic-Kiln-Furnace-1300-Temperature/32832729663.html?spm=a2g0s.9042311.0.0.3dd14c4dIQr1ud);
-- Thermocouple wire:
-    + I bought the 24awg yellow k-type wire at the pottery store, amazon has it too;
-    + I use about 6 feet, the controller is attached to the wall.
-- 1 - uln2803a darlington transitor array to switch 12V fan and 12V coils of the relays
+- Thermocouple wire
+    + I bought the 24awg yellow k-type wire at the pottery store,
+    + I use about 6 feet, the controller is attached to the wall;
+- uln2803a to switch 12V fan and 12V coils of the relays
 	+ $1/each on amazon, using 3 of 8 channels;
-- 3 - Deltrol 20852-81 relays
+- Deltrol 20852-81 relays
+	+ 1 for each segment of kiln, 3 for my kiln
 	+ This is equivelent to relay Skutt uses to switch sections/zones (Skutt model is SPDT, this is same series but DPDT),
 	+ $17.50 each and about that much for shipping (https://www.galco.com/buy/Deltrol-Controls/20852-81);
 - 12V power supply
-	+ converts 120vac to 12vdc;
-	+ supplies 12v to relay coils, HDMI monitor, and 5v buck converter;
-	+ $20 (https://www.amazon.com/gp/product/B00DECZ7WC/ref=oh_aui_detailpage_o01_s01?ie=UTF8&psc=1);
-	+ rail mounted.
+	+ converts 120vac to 12vdc,
+	+ supplies 12v to relay coils, HDMI monitor, and 5v buck converter,
+	+ $20 (https://www.amazon.com/gp/product/B00DECZ7WC/ref=oh_aui_detailpage_o01_s01?ie=UTF8&psc=1),
+	+ rail mounted;
 - 5V buck converter
-	+ converts 12v to 5v USB connector for Pi power;
+	+ converts 12v to 5v USB connector for Pi power,
 	+ $7 (https://www.amazon.com/gp/product/B071FJVRCT/ref=oh_aui_detailpage_o03_s00?ie=UTF8&psc=1);
-- monitor w/HDMI input, mine is 1366x780;
+- monitor w/HDMI input
+	+ optional can be copntrolled/viewed from phone or computer on home network;
 - terminal blocks to distribute L1, L2, N and GND
-	+ Ground, $6 (https://www.amazon.com/gp/product/B000K2MA9M/ref=oh_aui_detailpage_o05_s00?ie=UTF8&psc=1)
+	+ Ground, $6 (https://www.amazon.com/gp/product/B000K2MA9M/ref=oh_aui_detailpage_o05_s00?ie=UTF8&psc=1),
 	+ L1,L2,Neutral, 3 @ $7/each, (https://www.amazon.com/gp/product/B000OTJ89Q/ref=oh_aui_detailpage_o05_s00?ie=UTF8&psc=1);
 - #12 awg hi-temp appliance wire to each element;
-- 3 ceramic 2 pole terminal blocks.
+- 3 ceramic 2 pole terminal blocks
+	+ 1 for each kiln segment;
 - crimp terminals, #10 awg, hi-temp appliance
-	+ $.16/each, (https://www.amazon.com/gp/product/B01L2TL63C/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1);
+	+ $.16/each, (https://www.amazon.com/gp/product/B01L2TL63C/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1),
 	+ uses the same crimper used on the elements $16, (https://www.amazon.com/gp/product/B01L2TL63C/ref=oh_aui_detailpage_o02_s00?ie=UTF8&psc=1);
 	+ the crimpers require muscle
 - lugs #6 AWG copper
-	+ $9 for 10 (https://www.amazon.com/gp/product/B073Y8Q9JQ/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1)
+	+ $9 for 10 (https://www.amazon.com/gp/product/B073Y8Q9JQ/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1);
 - big crimper
-	+ $25, (https://www.amazon.com/gp/product/B07D7Q54N2/ref=oh_aui_detailpage_o01_s03?ie=UTF8&psc=1)
+	+ $25, (https://www.amazon.com/gp/product/B07D7Q54N2/ref=oh_aui_detailpage_o01_s03?ie=UTF8&psc=1),
 	+ I crimp 2 times, first time with correct size, second time reduced one notch(correct size is loose);
-- 14 THHN stranded, hardware store, to power 12V supply, white,red,greem 2' each
+- 14 THHN stranded, hardware store, to power 12V supply, white,red,green 2' each;
+- hook up wire
+	+ power to pi, fan, relay coils,
+	+ (https://www.amazon.com/gp/product/B07G7W7G4T/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1);
+- prototype board to mount everything
+	+ https://www.adafruit.com/product/2310);
 - heat shrink, Harbor Freight
 
 Thermocouple tip: One side of the type-K thermocouple and type-k wire is magnetic(red side), Test with magnet to wire correctly.
@@ -99,10 +107,10 @@ Stuff to get it to work:
 
 - Install PiLN files in /home and create log directory:
 
-		sudo adduser PiLN
-		su - PiLN
-		git clone git@github.com:BlakeCLewis/MyPiLN.git .
-		mkdir ./log
+		su - pi
+		git clone git@github.com:BlakeCLewis/PiLN.git
+		mkdir ./log ./db ./html ./html/images ./html/style
+
 
 - Install sqlite3:
 
@@ -110,34 +118,11 @@ Stuff to get it to work:
 
 - Set up directories/link for web page:
 
-		sudo mkdir /var/www/html/images
-		sudo mkdir /var/www/html/style
-		chown pi:pi /var/www/html/style /var/www/html/images
-		cp /home/PiLN/images/hdrback.png /var/www/html/images/hdrback.png
-		cp /home/PiLN/images/piln.png   /var/www/html/images/piln.png
-		cp /home/PiLN/style/style.css   /var/www/html/style/style.css
 
-- !!!!!!! needs update to switched out Apache for lighttpd !!!
-- Add the following ScriptAlias and Directory parameters under "IfDefine ENABLE_USR_LIB_CGI_BIN" in /etc/apache2/conf-available/serve-cgi-bin.conf:
-
-		ScriptAlias /pilnapp/ /home/PiLN/app/
-		<Directory "/home/PiLN/app/">
-			AllowOverride None
-			Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
-			Require all granted
-		</Directory>
-
-- Create links to enable cgi modules:
-
-		cd /etc/apache2/mods-enabled
-		sudo ln -s ../mods-available/cgid.conf cgid.conf
-		sudo ln -s ../mods-available/cgid.load cgid.load
-		sudo ln -s ../mods-available/cgi.load cgi.load
-
-- Restart Apache:
-
-		sudo systemctl daemon-reload
-		sudo systemctl restart apache2
+		ln -s /home/pi/PiLN/images/hdrback.png /home/pi/html/images/hdrback.png
+		ln -s /home/pi/PiLN/images/piln.png    /home/pi/html/images/piln.png
+		ln -s /home/pi/PiLN/style/style.css    /home/pi/html/style/style.css
+- lighttpd ?
 
 - Install required Python packages:
 
@@ -148,25 +133,23 @@ Stuff to get it to work:
 		sudo pip install RPLCD
 		sudo apt install python-smbus
 
-- Install Adafruit MAX31856 Module:
+- Install Adafruit Pyhton MAX31856 library:
 
-		cd ~
+		cd
 		git clone https://github.com/adafruit/Adafruit_Python_MAX31856.git
 		cd Adafruit_Python_MAX31856
 		sudo python setup.py install
 
 - create the sqlite3 database:
 
-		sudo mkdir -p /var/www/db/PiLN/
-		sudo chown -R PiLN:PiLN /var/www/db
-		sqlite3 /var/www/db/PiLN/PiLN.sqlite3
-		sqlite> .read /home/PiLN/PiLN.sql;
+		sqlite3 /home/pi/db/PiLN.sqlite3
+		sqlite> .read /home/pi/PiLN/docs/PiLN.sql;
 
 - Tuning: 
 
 	+ Skutt KS1027 with old elements:
 	
-			Kc:   6.0% 
+			Kc:   6.0
 			Kp:   3.0
 			Ki:   0.4
 			Kd:  13.0
@@ -179,7 +162,7 @@ Stuff to get it to work:
 
 - Start the firing daemon:
 
-		python3 ./daemon/pilnfired.py
+		python3 /home/pi/PiLN/daemon/pilnfired.py
 
 - PID with C algorithm:
 
