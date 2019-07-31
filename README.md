@@ -2,27 +2,18 @@ Electricity and heat are dangerous! Evaluate the risk and make go no go decision
 
 Web-based Raspberry Pi Kiln Control:
 - achieved my goal to run on Rasberry Pi Zero W, but I am currently running on a Raspberry Pi 3b: 
-	+ sqlite3 instead of MySQL
-	+ lighttpd instead of apache2 (apache memory was 1/2 pi zero memory, lighttpd does not even show up in top)
-	+ on a Pi Zero W 'startx chromium-browser --start-maximized' (chrome in X with no window manager)
-    + or hit it with browser from other machine on your network
-    + I run full desktop on Pi 3b
+	+ sqlite3 database for firing profiles and logging (very small memory footprint)
+	+ lighttpd web server (very small memory footprint)
 
 - kiln sitter(KS) as a sensor
 	+ KS functions as 'ARMED', can not start firing without kilnsitter being armed
-	+ mode 1: set top temp lower than KS cone, thermocouple temp is shutoff trigger, KS is safety
-	+ mode 2: set top temp higher than KS cone, KS is shutoff trigger, thermocouple is safety
+	+ set profile top temp higher than KS cone, KS is intended trigger, thermocouple is safety
 
 Future improvements:
-- record ambient temp with firing data:
-- thermocouple class:
-	+ MAX31855 current harware,
-	+ MAX31856 has 50/60hz filter and a correction table and can do multiple types including S, minimal change
 - performance watchdog:
 	+ warning notifications, klexting;
 	+ shutdown when a minimum rate cannot be maintained,
 - inductive current sensors: element fault indication;
-- zone control: thermocouple/section and control sections independently;
 - crash/loss of power recovery:
 	+ PI comes up, KS is armed & profile is 'Running' then how to consider unfinished segment
 	+ compare temp at the timestamp to current temp
@@ -32,17 +23,14 @@ Future improvements:
 Hardware:
 - 20x4 LCD w/ i2c backpack
 	+ $13, (https://www.amazon.com/gp/product/B01GPUMP9C/ref=oh_aui_detailpage_o01_s00?ie=UTF8&psc=1) uses RPLCD library
-- MAX31856 thermocouple module
-	+ $17.50, Adafruit (https://www.adafruit.com/product/3263);
-    + not yet using, but want to switch soon, it is a much better chip than the MAX31855
-- MAX31855 thermocouple module
-	+ $14.95, Adafruit (https://www.adafruit.com/product/269);
+- 2 MAX31856 thermocouple module
+	+ $17.50 each, Adafruit (https://www.adafruit.com/product/3263);
 - High temperature (2372 F) type K thermocouple
 	+ $7/each, 3 pack, (https://www.aliexpress.com/item/High-Temperature-K-Type-Thermocouple-Sensor-for-Ceramic-Kiln-Furnace-1300-Temperature/32832729663.html?spm=a2g0s.9042311.0.0.3dd14c4dIQr1ud);
 - Thermocouple wire:
-    + I bought the 24awg yellow k-type stuff at the pottery store, amazon has it too;
-    + I use about 8 feet, the controller is attached to the wall.
-- 1 - uln2803a darlington transitor array to switch 12V coil on the relays
+    + I bought the 24awg yellow k-type wire at the pottery store, amazon has it too;
+    + I use about 6 feet, the controller is attached to the wall.
+- 1 - uln2803a darlington transitor array to switch 12V fan and 12V coils of the relays
 	+ $1/each on amazon, using 3 of 8 channels;
 - 3 - Deltrol 20852-81 relays
 	+ This is equivelent to relay Skutt uses to switch sections/zones (Skutt model is SPDT, this is same series but DPDT),
@@ -70,25 +58,17 @@ Hardware:
 - big crimper
 	+ $25, (https://www.amazon.com/gp/product/B07D7Q54N2/ref=oh_aui_detailpage_o01_s03?ie=UTF8&psc=1)
 	+ I crimp 2 times, first time with correct size, second time reduced one notch(correct size is loose);
-- din rail mounts
-	+ $17/5 pair(https://www.amazon.com/gp/product/B01H1H86UU/ref=oh_aui_detailpage_o00_s00?ie=UTF8&psc=1);
-- din rails
-	+ $5/each (https://www.amazon.com/gp/product/B01FT485S0/ref=oh_aui_detailpage_o02_s01?ie=UTF8&psc=1);
 - 14 THHN stranded, hardware store, to power 12V supply, white,red,greem 2' each
 - heat shrink, Harbor Freight
-- #10 32tpi tap and #21 jobber drill bit
-	+ I have lots of 10-32 screws from rack mount hardware extras;
-	+ drill and tap a hole, screw in a screw and use the $10 Harbor Freight angle grinder to cut it flush on the back of the box.
 
 Thermocouple tip: One side of the type-K thermocouple and type-k wire is magnetic(red side), Test with magnet to wire correctly.
 
-
 - Current kiln controller is attached to is a Old Skutt 281, which is a previous model number of KS1027:
-  + old elements, I am surprised that it easily reaches temp at high speed, this kiln sat unused, outside under roof for 15 years, I don't want to put my new elements in it;
+  + old elements, I am surprised that it easily reaches temp at a reasonable rate, this kiln sat unused, outside under roof for 15 years;
   + lid(split and flaking)repaired/coated;
   + base(cracks) repaired;
   + rust removal on controller boxes, painted;
-  + built 2 steel rolling stands;
+  + built rolling stand out of 2"x3" mild steel rectangular tube;
 
 
 Stuff to get it to work:
@@ -167,11 +147,11 @@ Stuff to get it to work:
 		sudo pip install RPLCD
 		sudo apt install python-smbus
 
-- Install Adafruit MAX31855 Module:
+- Install Adafruit MAX31856 Module:
 
 		cd ~
-		git clone https://github.com/adafruit/Adafruit_Python_MAX31855.git
-		cd Adafruit_Python_MAX31855
+		git clone https://github.com/adafruit/Adafruit_Python_MAX31856.git
+		cd Adafruit_Python_MAX31856
 		sudo python setup.py install
 
 - create the sqlite3 database:
@@ -200,54 +180,26 @@ Stuff to get it to work:
 
 		python3 ./daemon/pilnfired.py
 
-- Glaze firing on March 3, 2019:
-
-![:::](./PiLN_Firing-03-009-2019.png)
-
-Test firing, I roasted some raw materials:
-
-![:::](./mypiln_934C.png)
-
-- Devices left to right/top to bottom:
-
-		White wire goes to Kilnsitter;
-		12V power supply from main AC voltage;
-		4xUSB power jacks, steps 12v down to 5V;
-		3 thermocouple chips, using 1, Thermocouple not yet hooked up;
-		Raspbery Pi 3b with expermental board on top/with chip to drive 12v relays;
-		3 relays, 1 for each kiln section;
-		250 receptical, no control for manual kiln, maybe put it on big relay in futer;
-		bus bars L1,L2,Neutral are covered, ground is bare;
-		3 #12-2 w/ gnd power cords to kiln, 15' #6-3 w/8 gnd to RV receptical on back of garage. 
-![:::](./mypiln_inside.png)
-
-- This is the state of the kiln during the above 1000C test:
-3 porcelain teminal blocks, with appliance high temp wire, each block feeds 1 section/2 elements.
-![:::](./kiln_element_wiring.png)
-
 - PID with C algorithm:
 
       This is a work in progress and I have not finish testing these instructions;
       My implementation of a PID algorithm that is optimaized for a system that can only add heat;
 
-      Short comings:
-
-          As presented, a change in window size will affect the P,I,D constants;
-          I am working on a version scales with window size to reduce the affect of changing window size;
-          C is not determined by a time sensitive value;
-          P,I & D are determined by an amount of error over a time segment
-              these terms should be normilazed by the time segment like (term*60/window)
+      Kc is not determined by a time sensitive value;
+      Ki is not time sensitive;
+      Kp & Kd are determined by an amount of error over a time segment 
+          these terms should be normilazed by the time segment like (term*60/window)
       
       error = Setpoint - Currrent_temp;
-      Pterm = Kp * error;
+      Pterm = Kp * 60/Window * error;
       Iterm = Summation (Ki * error), constrained by (Imin <= Iterm <= Imax);
-      Dterm = Kd (error - previous_error);
-      Cterm = Kc * (Current_temp - room_temp)/100;
-      Window = determinied by bump test.
+      Dterm = Kd * 60/Window * (error - previous_error);
+      Cterm = Kc/100 * (Current_temp - room_temp);
+      Window = determinied by bump test, mine is 30 seconds
 
       Window:
           size of the base time unit, the controller will decide what to every window;
-          is determined by kiln response time (how long it takes to finish reacting to input);
+          determined by kiln response time (how long it takes to finish reacting to input);
           window = 30;
           bump test
 
@@ -261,8 +213,6 @@ Test firing, I roasted some raw materials:
           Kc = 6;
           Steady state term, required amount of energy to maintain temp;
           it is linear, inverse proportional to r-value of kiln;
-          this is my solution to the oscillating I could not tune out of PID;
-          it probably is not an original thought;
           my kiln requires about 6% of output per 100C of temp differential;
           (100C ~= 6% to hold temp, 1000C ~= 60% to hold temp);
           tune:
@@ -272,24 +222,24 @@ Test firing, I roasted some raw materials:
 
       Pterm:
 
-          Kp = 5;
-          An amount proportional to desired change in temp;
-          this was an intuitive gues that worked
+          Kp = 3;
+          Proportional to desired change in temp;
+	  TODO - test runs with rate 60 and 166 C/hr, query the database and average(pid_output-Pterm) for each 100C segment.
 
       Iterm:
 
-          Ki = 1;
+          Ki = 0.4;
           Imin = -25;
           Imax = 25;
           Accumlitive error, corrects for past errors in (Cterm + Pterm);
           I look at it as incremental change in output to correct for error of (Cterm + Pterm);
-          To reduce iIterm "Windup", Iterm is limited by (Imin <= Iterm <+ Imax).
+          To reduce Iterm "Windup", Iterm is limited by (Imin <= Iterm <+ Imax).
 
       Dterm:
 
-          Kd = 25;
-          rate of change in error, d;
-          Dterm needs to beable to cancel Item, another intuitive guess.
+          Kd = 13;
+          rate of change in error;
+          Dterm needs to be able to cancel the sum of the other 3 terms to slow/speed change in temp to keep from over shooting.
 
       Output:
 
