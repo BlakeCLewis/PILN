@@ -75,26 +75,27 @@ Stuff to get it to work:
 
 - Pin-Out:
 
-		RPLCD:		GPIO 2 SDA
-		RPLCD:		GPIO 3 SCL
-		RPLCD:		5V
-		RPLCD:		GND
-		MAX31855+:		3.3v
-		MAX31855-:		GND
-		MAX31855 CS:		GPIO 16
-		MAX31855 DO:		GPIO 19
-		MAX31855 CLK:		GPIO 21
-		unl2003a 1:		GPIO 22 
-		unl2003a 3:		GPIO 23
-		unl2003a 5:		GPIO 24
-		unl2003a 7:             GPIO 13
-		unl2003a 8:		GND
-		unl2003a 9:		12V
-		unl2003a 10:            FAN black/gnd
+		RPLCD:  	GPIO 2 SDA
+		RPLCD:  	GPIO 3 SCL
+		RPLCD:  	5V
+		RPLCD:  	GND
+		MAX31856 3.3V:	3.3V    PIN17
+		MAX31856 GND:	GND     PIN14
+		MAX31856 SDO:	GPIO 9
+		MAX31856 SDI:	GPIO 10
+		MAX31856 CS:	GPIO 8 & GPIO 7
+		MAX31856 SCK:	GPIO 11
+		unl2003a 1:	GPIO 22 
+		unl2003a 3:	GPIO 23
+		unl2003a 5:	GPIO 24
+		unl2003a 7:	GPIO 13
+		unl2003a 8:	GND
+		unl2003a 9:	12V
+		unl2003a 10:	FAN black/gnd
 		unl2003a 16:	relay #1 coil (input is accross the chip on pin1)
 		unl2003a 14:	relay #2 coil (input is pin3)
 		unl2003a 12:	relay #3 coil (input is pin5)
-        12V:	relay 1,2,3 coils and FAN red/+
+		12V:    	relay 1,2,3 coils and FAN red/+
 
 - Install PiLN files in /home and create log directory:
 
