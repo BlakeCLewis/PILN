@@ -1,7 +1,7 @@
 Electricity and heat are dangerous! Evaluate the risk and make go no go decision!
 
 Web-based Raspberry Pi Kiln Control:
-- achieved my goal to run on Rasberry Pi Zero W, but I am currently running on a Raspberry Pi 3b: 
+- achieved my goal to run on Rasberry Pi Zero W, but I am currently firering on a Raspberry Pi 3b: 
 	+ sqlite3 database for firing profiles and logging (very small memory footprint)
 	+ lighttpd web server (very small memory footprint)
 
@@ -167,40 +167,41 @@ Stuff to get it to work:
 - PID with C algorithm:
 
       This is a work in progress and I have not finish testing these instructions;
-      My implementation of a PID algorithm that is optimaized for a system that can only add heat;
+      My implementation of a PID algorithm that is optimized for a system that can only add heat;
 
       Kc is not determined by a time sensitive value;
       Ki is not time sensitive;
       Kp & Kd are determined by an amount of error over a time segment 
           these terms should be normilazed by the time segment like (term*60/window)
       
+      Cterm = Kc/100 * (Current_temp - room_temp);
+      Window = determinied by bump test, mine is 30 seconds
       error = Setpoint - Currrent_temp;
       Pterm = Kp * 60/Window * error;
       Iterm = Summation (Ki * error), constrained by (Imin <= Iterm <= Imax);
       Dterm = Kd * 60/Window * (error - previous_error);
-      Cterm = Kc/100 * (Current_temp - room_temp);
-      Window = determinied by bump test, mine is 30 seconds
+      output = (Cterm + Pterm + Iterm + Dterm) constrained by (0 <= output <= 100);
 
       Window:
-          size of the base time unit, the controller will decide what to every window;
-          determined by kiln response time (how long it takes to finish reacting to input);
-          window = 30;
+          Size of the base time unit, the controller will decide what to do every window;
+          Based on the response time of the kiln (how long it takes to finish reacting to input);
+          My kiln window = 30;
           bump test
 
               turning on kiln for 30 seconds
-              record temp/time every 10 seconds
-              tau_temp = .75(hi_temp - start-temp)
-              window = 1/4 (time at tau+temp)
+              record temp every 10 seconds
+              tau_temp = .75 * (hi_temp - start_temp)
+              window = .25 * (time of tau_temp)
 
       Cterm:
 
           Kc = 6;
           Steady state term, required amount of energy to maintain temp;
-          it is linear, inverse proportional to r-value of kiln;
+          Linear, inverse proportional to r-value of kiln;
           my kiln requires about 6% of output per 100C of temp differential;
           (100C ~= 6% to hold temp, 1000C ~= 60% to hold temp);
           tune:
-              after determining "window", do a test run to 500C, with 10 minute holds every 100C;
+              after determining "window", do a test run to 500C, with a 10 minute hold every 100C;
               query the database to find the average output during the holds;
               mine was about 6% per 100C.
 
@@ -211,22 +212,21 @@ Stuff to get it to work:
 	  TODO - test runs with rate 60 and 166 C/hr, query the database and average(pid_output-Pterm) for each 100C segment.
 
       Iterm:
-
+          
           Ki = 0.4;
           Imin = -25;
           Imax = 25;
-          Accumlitive error, corrects for past errors in (Cterm + Pterm);
-          I look at it as incremental change in output to correct for error of (Cterm + Pterm);
-          To reduce Iterm "Windup", Iterm is limited by (Imin <= Iterm <+ Imax).
+          Accumlitive error correction of Cterm + Pterm;
+          To reduce "Iterm Windup", limit with (Imin <= Iterm <+ Imax).
 
       Dterm:
 
           Kd = 13;
-          rate of change in error;
-          Dterm needs to be able to cancel the sum of the other 3 terms to slow/speed change in temp to keep from over shooting.
+          Change in error;
+          Dterm is the acceleration term.
+          It allows time for Iterm to wind up or down, to keep from falling behind or over shooting.
 
-      Output:
+      output:
 
           output = (Cterm + Pterm + Iterm + Dterm);
-          output is a percentage and therefore constrained by (0 <= output <= 100)
-          
+          output is a percentage and therefore needs to be constrained by (0 <= output <= 100)
