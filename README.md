@@ -1,9 +1,9 @@
 Electricity and heat are dangerous! Evaluate the risk and make go no go decision!
 
 Web-based Raspberry Pi Kiln Control:
-- achieved my goal to run on Rasberry Pi Zero W, but I am currently firering on a Raspberry Pi 3b: 
-	+ sqlite3 database for firing profiles and logging (very small memory footprint)
-	+ lighttpd web server (very small memory footprint)
+- achieved my goal to run on Rasberry Pi Zero W, but I am currently firing on a Raspberry Pi 3b: 
+	+ sqlite3 database for firing profiles and logging (small memory footprint)
+	+ lighttpd web server (small memory footprint)
 
 - kiln sitter(KS) as a sensor
 	+ KS functions as 'ARMED', can not start firing without kilnsitter being armed
@@ -34,7 +34,7 @@ Hardware:
 	+ $1/each on amazon, using 3 of 8 channels;
 - Deltrol 20852-81 relays
 	+ 1 for each segment of kiln, 3 for my kiln
-	+ This is equivelent to relay Skutt uses to switch sections/zones (Skutt model is SPDT, this is same series but DPDT),
+	+ This is equivalent to relay Skutt uses to switch sections/zones (Skutt model is SPDT, this is same series but DPDT),
 	+ $17.50 each and about that much for shipping (https://www.galco.com/buy/Deltrol-Controls/20852-81);
 - 12V power supply
 	+ converts 120vac to 12vdc,
@@ -45,7 +45,7 @@ Hardware:
 	+ converts 12v to 5v USB connector for Pi power,
 	+ $7 (https://www.amazon.com/gp/product/B071FJVRCT/ref=oh_aui_detailpage_o03_s00?ie=UTF8&psc=1);
 - monitor w/HDMI input
-	+ optional can be copntrolled/viewed from phone or computer on home network;
+	+ optionally can be controlled/viewed from phone or computer on home network;
 - terminal blocks to distribute L1, L2, N and GND
 	+ Ground, $6 (https://www.amazon.com/gp/product/B000K2MA9M/ref=oh_aui_detailpage_o05_s00?ie=UTF8&psc=1),
 	+ L1,L2,Neutral, 3 @ $7/each, (https://www.amazon.com/gp/product/B000OTJ89Q/ref=oh_aui_detailpage_o05_s00?ie=UTF8&psc=1);
@@ -100,7 +100,7 @@ Stuff to get it to work:
 		unl2003a 8:	GND
 		unl2003a 9:	12V
 		unl2003a 10:	FAN black/gnd
-		unl2003a 16:	relay #1 coil (input is accross the chip on pin1)
+		unl2003a 16:	relay #1 coil (input is across the chip on pin1)
 		unl2003a 14:	relay #2 coil (input is pin3)
 		unl2003a 12:	relay #3 coil (input is pin5)
 		12V:    	relay 1,2,3 coils and FAN red/+
@@ -158,7 +158,7 @@ Stuff to get it to work:
 - Using the Web App:
 
 		On the same network that the RPi is connected, http://<RPi_IPAddress>/pilnapp/home.cgi
-		Or, on the controler RPi, http://localhost/pilnapp/home.cgi
+		Or, on the controller RPi, http://localhost/pilnapp/home.cgi
 
 - Start the firing daemon:
 
@@ -172,10 +172,10 @@ Stuff to get it to work:
       Kc is not determined by a time sensitive value;
       Ki is not time sensitive;
       Kp & Kd are determined by an amount of error over a time segment 
-          these terms should be normilazed by the time segment like (term*60/window)
+          these terms should be normalized by the time segment like (term*60/window)
       
       Cterm = Kc/100 * (Current_temp - room_temp);
-      Window = determinied by bump test, mine is 30 seconds
+      Window = determined by bump test, mine is 30 seconds
       error = Setpoint - Currrent_temp;
       Pterm = Kp * 60/Window * error;
       Iterm = Summation (Ki * error), constrained by (Imin <= Iterm <= Imax);
