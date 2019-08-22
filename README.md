@@ -184,8 +184,8 @@ Stuff to get it to work:
 
       Window:
           Size of the base time unit, the controller will decide what to do every window;
-          Based on the response time of the kiln (how long it takes to finish reacting to input);
-          My kiln window = 30;
+          based on the response time of the kiln (how long it takes to finish reacting to input);
+          my kiln window = 30;
           bump test
 
               turning on kiln for 30 seconds
@@ -196,8 +196,8 @@ Stuff to get it to work:
       Cterm:
 
           Kc = 6;
-          Steady state term, required amount of energy to maintain temp;
-          Linear, inverse proportional to r-value of kiln;
+          steady state term, required amount of energy to maintain temp;
+          linear, inverse proportional to r-value of kiln;
           my kiln requires about 6% of output per 100C of temp differential;
           (100C ~= 6% to hold temp, 1000C ~= 60% to hold temp);
           tune:
@@ -208,7 +208,7 @@ Stuff to get it to work:
       Pterm:
 
           Kp = 3;
-          Proportional to desired change in temp;
+          proportional to desired change in temp;
 	  TODO - test runs with rate 60 and 166 C/hr, query the database and average(pid_output-Pterm) for each 100C segment.
 
       Iterm:
@@ -216,15 +216,15 @@ Stuff to get it to work:
           Ki = 0.4;
           Imin = -25;
           Imax = 25;
-          Accumlitive error correction of Cterm + Pterm;
-          To reduce "Iterm Windup", limit with (Imin <= Iterm <+ Imax).
+          accumlitive error correction of Cterm + Pterm;
+          to reduce "Iterm Windup", limit with (Imin <= Iterm <+ Imax).
 
       Dterm:
 
           Kd = 13;
-          Change in error;
+          change in error;
           Dterm is the acceleration term.
-          It allows time for Iterm to wind up or down, to keep from falling behind or over shooting.
+          it allows time for Iterm to wind up or down, to keep from falling behind or over shooting.
 
       output:
 
