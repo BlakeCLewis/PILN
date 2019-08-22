@@ -189,7 +189,7 @@ Stuff to get it to work:
           bump test
 
               turning on kiln for 30 seconds
-              record temp every 10 seconds
+              record time/temp every 10 seconds until temp starts falling
               tau_temp = .75 * (hi_temp - start_temp)
               window = .25 * (time of tau_temp)
 
