@@ -209,7 +209,7 @@ Stuff to get it to work:
 
           Kp = 3;
           proportional to desired change in temp;
-	  TODO - test runs with rate 60 and 166 C/hr, query the database and average(pid_output-Pterm) for each 100C segment.
+          TODO - test runs with rate 60 and 166 C/hr, query the database and average(pid_output-Pterm) for each 100C segment.
 
       Iterm:
           
