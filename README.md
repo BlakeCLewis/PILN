@@ -216,6 +216,7 @@ Stuff to get it to work:
           Ki = 0.4;
           Imin = -25;
           Imax = 25;
+	  Imax and Imin are hard coded, may need to make tunable or auto-adjusted based on temp and/or temp climb rate;
           accumlitive error correction of Cterm + Pterm;
           to reduce "Iterm Windup", limit with (Imin <= Iterm <+ Imax).
 
