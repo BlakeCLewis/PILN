@@ -122,8 +122,17 @@ Stuff to get it to work:
 		ln -s /home/pi/PiLN/images/hdrback.png /home/pi/html/images/hdrback.png
 		ln -s /home/pi/PiLN/images/piln.png    /home/pi/html/images/piln.png
 		ln -s /home/pi/PiLN/style/style.css    /home/pi/html/style/style.css
-- lighttpd ?
+- lighttpd:
 
+		sudo apt-get install lighttpd
+		sudo cp lighttpd.conf /etc/lighttpd/
+		cd /etc/lighttpd/conf-enabled
+		sudo ln -s ../conf-available/10-cgi.conf .
+		sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+		sudo iptables save
+		cd 
+		chown www-data:www-data PiLN/html/pilnstat.json
+		
 - Install required Python packages:
 
 		sudo raspi-config #enable interfaces ic2 & spi
