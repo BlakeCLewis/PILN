@@ -151,6 +151,7 @@ Stuff to get it to work:
 
 - create the sqlite3 database:
 
+                sudo chown -R www-data:www-data /home/pi/PiLN/db
 		sqlite3 /home/pi/db/PiLN.sqlite3
 		sqlite> .read /home/pi/PiLN/docs/PiLN.sql;
 
