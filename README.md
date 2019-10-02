@@ -144,10 +144,10 @@ Stuff to get it to work:
 		sudo pip install RPLCD
 		sudo apt install python-smbus
 
-- Install Adafruit Pyhton MAX31856 library:
+- Install John Robison's Adafruit Pyhton MAX31856 library:
 
 		cd
-		git clone https://github.com/adafruit/Adafruit_Python_MAX31856.git
+		git clone https://github.com/johnrbnsn/Adafruit_Python_MAX31856
 		cd Adafruit_Python_MAX31856
 		sudo python setup.py install
 
