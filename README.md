@@ -1,4 +1,4 @@
-Code based on pvarney/PiLN
+This project is based on code from pvarney/PiLN
 
 Electricity and heat are dangerous! Evaluate the risk and make go no go decision!
 
