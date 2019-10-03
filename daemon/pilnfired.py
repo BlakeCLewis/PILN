@@ -1,4 +1,28 @@
-#!le/usr/bin/env python3
+#!/usr/bin/env python3
+
+#   PiLN: Rassberry Pi electric kiln controller
+#
+#   Copyright (C) 2017  pvarney     git@github.com:pvarney/PiLN.git
+#   Copyright (C) 2018  BlakeCLewis git@github.com:BlakeCLewis/PILN.git
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+license="""
+   PiLN  Copyright (C) 2017 pvarney, 2018 Blake C. Lewis
+   This program comes with ABSOLUTELY NO WARRANTY; 
+   This is free software, and you are welcome to redistribute it
+   under the terms of the GNU General Public License version 3.
+"""
+print (license)
 
 from signal import *
 import os
@@ -11,6 +35,8 @@ import Adafruit_GPIO
 import Adafruit_GPIO.SPI as SPI
 from Adafruit_MAX31856 import MAX31856 as MAX31856
 from display import display
+
+
 
 # initialize display (hardware i2c in display.py)
 lcd = display()

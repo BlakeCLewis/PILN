@@ -1,4 +1,21 @@
- select printf('$%.2f',round(sum(pid_output)/2/60/60*12*.10,2)) from firing where run_id>44;
+--   PiLN: Rassberry Pi electric kiln controller
+--
+--   Copyright (C) 2017  pvarney     git@github.com:pvarney/PiLN.git
+--   Copyright (C) 2018  BlakeCLewis git@github.com:BlakeCLewis/PILN.git
+--
+--   This program is free software: you can redistribute it and/or modify
+--   it under the terms of the GNU General Public License version 3
+--   published by the Free Software Foundation.
+--
+--   This program is distributed in the hope that it will be useful,
+--   but WITHOUT ANY WARRANTY; without even the implied warranty of
+--   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+--   GNU General Public License for more details.
+--
+--   You should have received a copy of the GNU General Public License
+--   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+select printf('$%.2f',round(sum(pid_output)/2/60/60*12*.10,2)) from firing where run_id>44;
 
 
 --kiln rated kwh = 12
