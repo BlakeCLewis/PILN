@@ -178,7 +178,6 @@ Stuff to get it to work:
 
 - PID with C algorithm:
 
-      This is a work in progress and I have not finish testing these instructions;
       My implementation of a PID algorithm that is optimized for a system that can only add heat;
 
       Kc is not determined by a time sensitive value;
