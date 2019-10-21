@@ -2,7 +2,7 @@ This project is based on code from pvarney/PiLN
 
 Electricity and heat are dangerous! Evaluate the risk and make go no go decision!
 
-Most kiln manufactures state "Do Not Fire Unattended". Commercial controllers deal with many fault modes that this controller does not address. Intermittent thermocouple connections, stuck relay, shorted element and weak elements, these faults have all happened to me and the control just keeps say "kiln think kiln can, kiln think kiln can". I had to intervene. Stuck relay and bad thermocouple readings are run away condition that could become meltdown/fire/death. "DO NOT FIRE UNATTENDED!"
+Most kiln manufactures state "Do Not Fire Unattended". Commercial controllers deal with many fault modes that this controller does not address. Intermittent thermocouple connections, stuck relay, shorted element and weak elements, these faults have all happened to me and the control just keeps say "kiln thinks kiln can, kiln thinks kiln can". I had to intervene. Stuck relay and bad thermocouple readings are run away condition that could become meltdown/fire/death. "DO NOT FIRE UNATTENDED!"
 
 Web-based Raspberry Pi Kiln Control:
 - achieved my goal to run on Rasberry Pi Zero W, but I am currently firing on a Raspberry Pi 3b: 
