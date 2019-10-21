@@ -212,8 +212,8 @@ Stuff to get it to work:
           my kiln requires about 6% of output per 100C of temp differential;
           (100C ~= 6% to hold temp, 1000C ~= 60% to hold temp);
           tune:
-              after determining "window", do a test run to 500C, with a 10 minute hold every 100C;
-              query the database to find the average output during the holds;
+              after determining "window", do a Bisque cone 06 to ~1000C, with a 10 minute hold every 100C;
+              query the database to average output during the holds;
               mine was about 6% per 100C.
 
       Pterm:
